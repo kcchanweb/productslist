@@ -30,4 +30,13 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'uob' => [
+        'key' => env('UOB_API_KEY'),
+        'password' => env('UOB_API_PASS'),
+        'secret' => env('UOB_API_SECRET'),
+        'host' => env('UOB_API_HOST'),
+        'url_prefix' => env('UOB_API_URL_PREFIX'),
+        'api_version' => env('UOB_API_VERSION'),
+    ]
+
 ];
