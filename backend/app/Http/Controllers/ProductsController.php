@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ValidationException;
+use App\Http\Responses\ProductsResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -13,8 +15,9 @@ class ProductsController extends Controller
      * Get a paginated list of products and return JSON
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
+     * @throws ValidationException
      */
-    public function list(Request $request)
+    public function list(Request $request): JsonResponse
     {
         $validate = Validator::make($request->all(), [
             'offset' => 'sometimes|numeric|min:0',
@@ -28,27 +31,12 @@ class ProductsController extends Controller
         $offset = (int)$request->get('offset', env('DEFAULT_PRODUCTS_OFFSET'));
         $limit = (int)$request->get('limit', env('DEFAULT_PRODUCTS_LIMIT'));
 
-//        app()->get('')
-        $total = 0;
+        $total = DB::table('products')->count();
+        $products = DB::table('products')->offset($offset)->limit($limit)->get([
+            'id', 'name', 'price', 'times_purchased', 'stock_level', 'orders_value'
+        ])->all();
 
-        // todo create ProductsResponse class to format output so that we can extend it to output data in other formats
-        return response()->json([
-            'pagination' => [
-                'offset' => $offset,
-                'limit' => $limit,
-                'total' => $total
-            ],
-            'data' => [],
-            'links' => [
-                'next' => $total <= $offset + $limit ? null : route('store.products', [
-                    'offset' => $offset + $limit,
-                    'limit' => $limit
-                ]),
-                'prev' => 0 > $offset - $limit ? null : route('store.products', [
-                    'offset' => $offset - $limit,
-                    'limit' => $limit
-                ]),
-            ]
-        ]);
+        $res = new ProductsResponse($offset, $limit, $total, $products);
+        return $res->json();
     }
 }
