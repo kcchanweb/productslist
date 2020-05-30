@@ -47,7 +47,7 @@ class UoBDataSync extends Command
             //$orders = array_merge($orders, $ordersResponse['orders']);
             foreach ($ordersResponse['orders'] as $order) {
                 foreach ($order['line_items'] as $item) {
-                    $orders[] = 
+                    $orders[] =
                 }
             }
         } while (count($ordersResponse['orders']) < env('UOB_ORDERS_LIMIT'));
