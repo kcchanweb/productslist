@@ -28,6 +28,7 @@ class ProductsController extends Controller
             throw new ValidationException($validate->errors()->getMessages());
         }
 
+        dd(env('DEFAULT_PRODUCTS_LIMIT'));
         $offset = (int)$request->get('offset', env('DEFAULT_PRODUCTS_OFFSET'));
         $limit = (int)$request->get('limit', env('DEFAULT_PRODUCTS_LIMIT'));
 
