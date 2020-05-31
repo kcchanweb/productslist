@@ -229,4 +229,8 @@ return [
 
     ],
 
+    'db_batch_size' => env('DB_BATCH_SIZE', 50),
+    'default_page_offset_size' => env('DEFAULT_PRODUCTS_OFFSET', 0),
+    'default_page_limit_size' => env('DEFAULT_PRODUCTS_LIMIT', 10),
+
 ];

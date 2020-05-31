@@ -15,22 +15,41 @@ class UOBClient
     public function __construct()
     {
         $baseUrl = 'https://'
-            . env('UOB_API_KEY') . ':'
-            . env('UOB_API_PASS') . '@'
-            . env('UOB_API_HOST');
+            . config('services.uob.key') . ':'
+            . config('services.uob.password') . '@'
+            . config('services.uob.host');
 
         $this->client = new Client([ 'base_uri' => $baseUrl ]);
     }
 
     /**
+     * @param string $path
+     * @param int $sinceId
+     * @param array $otherParameters
+     * @return string
+     */
+    private function getEndpointPath(string $path, int $sinceId, array $otherParameters = []): string
+    {
+        $parameters = array_merge($otherParameters, [
+            'limit' => config('services.uob.results_limit'), // both endpoints needed have these parameters
+            'since_id' => $sinceId
+        ]);
+
+        return config('services.uob.url_prefix') . config('services.uob.api_version') . $path
+            . '?' . http_build_query($parameters);
+    }
+
+    /**
+     * @param int $sinceId
      * @return array
      */
-    public function getProducts(): array
+    public function getProducts(int $sinceId = 1): array
     {
-        $response = $this->client->request('get',
-            env('UOB_API_URL_PREFIX') . env('UOB_API_VERSION') . '/products.json');
+        $endpoint = $this->getEndpointPath('/products.json', $sinceId, ['fields' => 'id,title,variants,image,inventory_quantity']);
+        $response = $this->client->request('get', $endpoint);
 
-        return json_decode($response->getBody(), true);
+        $products = json_decode($response->getBody(), true);
+        return $products['products'] ?: [];
     }
 
     /**
@@ -39,12 +58,10 @@ class UOBClient
      */
     public function getOrders(int $sinceId = 1): array
     {
-        $response = $this->client->request('get',
-            env('UOB_API_URL_PREFIX') . env('UOB_API_VERSION')
-            . '/orders.json?fields=line_items&limit=' . env('UOB_ORDERS_LIMIT')
-            . '&since_id=' . $sinceId
-        );
+        $endpoint = $this->getEndpointPath('/orders.json', $sinceId, ['fields' => 'id,line_items']);
+        $response = $this->client->request('get', $endpoint);
 
-        return json_decode($response->getBody(), true);
+        $orders = json_decode($response->getBody(), true);
+        return $orders['orders'] ?: [];
     }
 }

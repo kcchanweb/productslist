@@ -20,5 +20,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::name('store.')
     ->group(function() {
-        Route::get('products', 'ProductsController@list')->name('products');
+        Route::get('product-metrics', 'ProductsController@listProductMetrics')->name('product-metrics');
 });

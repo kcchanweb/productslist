@@ -16,14 +16,21 @@ class ProductsResponse
     private int $total;
 
     /** @var array  */
-    private array $products;
+    private array $productMetrics;
 
-    public function __construct(int $offset = 0, int $limit = 0, int $total = 0, array $products = [])
+    /**
+     * ProductsResponse constructor.
+     * @param int $offset
+     * @param int $limit
+     * @param int $total
+     * @param array $productMetrics
+     */
+    public function __construct(int $offset = 0, int $limit = 0, int $total = 0, array $productMetrics = [])
     {
         $this->offset = $offset;
         $this->limit = $limit;
         $this->total = $total;
-        $this->products = $products;
+        $this->productMetrics = $productMetrics;
     }
 
     /**
@@ -37,13 +44,13 @@ class ProductsResponse
                 'limit' => $this->limit,
                 'total' => $this->total
             ],
-            'data' => $this->products,
+            'data' => $this->productMetrics,
             'links' => [
-                'next' => $this->total <= $this->offset + $this->limit ? null : route('store.products', [
+                'next' => $this->total <= $this->offset + $this->limit ? null : route('store.product-metrics', [
                     'offset' => $this->offset + $this->limit,
                     'limit' => $this->limit
                 ]),
-                'prev' => 0 > $this->offset - $this->limit ? null : route('store.products', [
+                'prev' => 0 > $this->offset - $this->limit ? null : route('store.product-metrics', [
                     'offset' => $this->offset - $this->limit,
                     'limit' => $this->limit
                 ]),

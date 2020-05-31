@@ -37,6 +37,7 @@ return [
         'host' => env('UOB_API_HOST'),
         'url_prefix' => env('UOB_API_URL_PREFIX'),
         'api_version' => env('UOB_API_VERSION'),
+        'results_limit' => env('UOB_RESULTS_LIMIT'),
     ]
 
 ];
