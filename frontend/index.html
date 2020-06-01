@@ -1,21 +1,37 @@
 <!doctype html>
 
 <html lang="en">
-<head>
-    <meta charset="utf-8">
+    <head>
+        <meta charset="utf-8">
 
-    <title>Universe of Birds - Products Metrics</title>
-    <meta name="description" content="UOB Products Metrics">
-    <meta name="author" content="KC Chan">
+        <title>Universe of Birds - Products Metrics</title>
+        <meta name="description" content="UOB Products Metrics">
+        <meta name="author" content="KC Chan">
 
-    <link rel="stylesheet" href="/css/styles.css?v=1.0">
+        <link rel="stylesheet" href="/css/styles.css?v=1.0">
+    </head>
 
-</head>
-
-<body>
-<div id="app">
-
-</div>
-<script src="/js/main.js"></script>
-</body>
+    <body>
+    <div id="app">
+        <h1>Universe of Birds - Products Info</h1>
+        <div class="list" v-if="products && products.length">
+            <div class="product" v-for="product in products">
+                <h2>{{ product.name }}</h2>
+                <span class="image"><img :src=product.image></span>
+                <div class="right">
+                    <span class="price"><strong>Price:</strong> {{ product.price }}</span>
+                    <span class="stock"><strong>Stock Level:</strong> {{ product.stock_level }}</span>
+                    <span class="purchased"><strong>Times Purchased:</strong> {{ product.purchased }}</span>
+                    <span class="ordersValue"><strong>Orders Value:</strong> {{ product.orders_value }}</span>
+                </div>
+            </div>
+        </div>
+        <router-link to="/products/page/0">Previous</router-link>
+        <router-link to="/products/page/2">Next</router-link>
+    </div>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script src="/js/vueApp.js"></script>
+    </body>
 </html>

@@ -1,0 +1,33 @@
+h2 {
+    font-size: 1.2em;
+}
+#app {
+    width: 1200px;
+    margin: 1em auto;
+}
+.product {
+    border-radius: 5px;
+    box-shadow: 1px 3px 10px #ccc;
+    display: block;
+    overflow: auto;
+    width: 100%;
+    margin-bottom: 1em;
+    padding: 0.5em;
+}
+
+.product > .image {
+    display: block;
+    width: 220px;
+    float: left;
+}
+.product .right {
+    display: block;
+    float: left;
+    width: 900px;
+}
+.product img {
+    width: 200px;
+}
+.product .right span {
+    display: block;
+}
