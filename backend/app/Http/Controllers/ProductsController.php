@@ -6,7 +6,6 @@ use App\Exceptions\ValidationException;
 use App\Http\Responses\ProductsResponse;
 use App\Models\ProductMetric;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -36,6 +35,7 @@ class ProductsController extends Controller
         $productMetrics = ProductMetric::offset($offset)->limit($limit)->get()->toArray();
 
         $res = new ProductsResponse($offset, $limit, $total, $productMetrics);
-        return $res->json();
+
+        return response()->json($res->format());
     }
 }

@@ -43,9 +43,9 @@ class UoBDataSync extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $this->persistAllProducts();
         $this->persistAllOrders();
@@ -55,8 +55,10 @@ class UoBDataSync extends Command
 
     /**
      * Fetch all products from API, flatten products/variants and persist to DB
+     *
+     * @return void
      */
-    private function persistAllProducts()
+    private function persistAllProducts(): void
     {
         $sinceId = 1;
         $batch = [];
@@ -135,8 +137,10 @@ class UoBDataSync extends Command
 
     /**
      * Fetch all orders from API and persist to DB
+     *
+     * @returns void
      */
-    private function persistAllOrders()
+    private function persistAllOrders(): void
     {
         $sinceId = 1;
         $batch = [];

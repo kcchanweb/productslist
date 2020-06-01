@@ -34,11 +34,11 @@ class ProductsResponse
     }
 
     /**
-     * @return JsonResponse
+     * @return array
      */
-    public function json(): JsonResponse
+    public function format(): array
     {
-        return response()->json([
+        return [
             'pagination' => [
                 'offset' => $this->offset,
                 'limit' => $this->limit,
@@ -46,15 +46,15 @@ class ProductsResponse
             ],
             'data' => $this->productMetrics,
             'links' => [
-                'next' => $this->total <= $this->offset + $this->limit ? null : route('store.product-metrics', [
-                    'offset' => $this->offset + $this->limit,
-                    'limit' => $this->limit
-                ]),
-                'prev' => 0 > $this->offset - $this->limit ? null : route('store.product-metrics', [
+                'prev' => 0 > $this->offset - $this->limit || $this->total === 0 ? null : route('store.product-metrics', [
                     'offset' => $this->offset - $this->limit,
                     'limit' => $this->limit
                 ]),
+                'next' => $this->total <= $this->offset + $this->limit || $this->total === 0 ? null : route('store.product-metrics', [
+                    'offset' => $this->offset + $this->limit,
+                    'limit' => $this->limit
+                ])
             ]
-        ]);
+        ];
     }
 }
