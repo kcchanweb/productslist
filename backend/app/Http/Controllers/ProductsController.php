@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ProductsResponse;
 use App\Models\ProductMetric;
+use App\Repositories\ProductMetricsRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,8 +32,9 @@ class ProductsController extends Controller
         $offset = (int)$request->get('offset', config('app.default_page_offset_size'));
         $limit = (int)$request->get('limit', config('app.default_page_limit_size'));
 
-        $total = ProductMetric::all()->count();
-        $productMetrics = ProductMetric::offset($offset)->limit($limit)->get()->toArray();
+        $productMetricsRepository = new ProductMetricsRepository();
+        $total = $productMetricsRepository->getCount();
+        $productMetrics = $productMetricsRepository->getPaginated($offset, $limit);
 
         $res = new ProductsResponse($offset, $limit, $total, $productMetrics);
 

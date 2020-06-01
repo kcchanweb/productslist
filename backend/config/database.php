@@ -106,6 +106,7 @@ return [
             'database' => env('REDIS_CACHE_DB', '1'),
         ],
 
+        'ttl' => env('REDIS_TTL', 3600)
     ],
 
 ];

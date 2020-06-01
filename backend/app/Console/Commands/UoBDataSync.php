@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Order;
-use App\Models\Product;
+use App\Repositories\OrdersRepository;
+use App\Repositories\ProductsRepository;
 use App\Services\UOBClient;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class UoBDataSync extends Command
 {
@@ -30,6 +29,16 @@ class UoBDataSync extends Command
     private $uobClient;
 
     /**
+     * @var ProductsRepository
+     */
+    private $productsRepository;
+
+    /**
+     * @var OrdersRepository
+     */
+    private $ordersRepository;
+
+    /**
      * Create a new command instance.
      *
      * @return void
@@ -38,6 +47,8 @@ class UoBDataSync extends Command
     {
         parent::__construct();
         $this->uobClient = new UOBClient();
+        $this->productsRepository = new ProductsRepository();
+        $this->ordersRepository = new OrdersRepository();
     }
 
     /**
@@ -50,7 +61,7 @@ class UoBDataSync extends Command
         $this->persistAllProducts();
         $this->persistAllOrders();
 
-
+        // data aggregated through the use of DB view
     }
 
     /**
@@ -73,7 +84,7 @@ class UoBDataSync extends Command
                     $batch[] = $this->buildProductInsertRow($product, $variant);
 
                     if (count($batch) === config('app.db_batch_size')) {
-                        Product::batchUpsert($batch);
+                        $this->productsRepository->batchUpsert($batch);
                         // reset after each insert
                         $batch = [];
                     }
@@ -84,7 +95,7 @@ class UoBDataSync extends Command
 
         // insert remaining products in non-full batch
         if (count($batch)) {
-            Product::batchUpsert($batch);
+            $this->productsRepository->batchUpsert($batch);
             unset($batch);
         }
     }
@@ -145,6 +156,7 @@ class UoBDataSync extends Command
         $sinceId = 1;
         $batch = [];
 
+
         do {
             $orders = $this->uobClient->getOrders($sinceId);
             foreach ($orders as $order) {
@@ -161,7 +173,7 @@ class UoBDataSync extends Command
                     }
 
                     if (count($batch) === config('app.db_batch_size')) {
-                        Order::batchUpsert($batch);
+                        $this->ordersRepository->batchUpsert($batch);
                         // reset after each insert
                         $batch = [];
                     }
@@ -171,7 +183,7 @@ class UoBDataSync extends Command
 
         // insert remaining products in non-full batch
         if (count($batch)) {
-            Order::batchUpsert($batch);
+            $this->ordersRepository->batchUpsert($batch);
             unset($batch);
         }
     }
